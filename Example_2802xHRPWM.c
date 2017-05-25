@@ -9,15 +9,15 @@
 //
 //! <h1> Full bridge management</h1>
 //! <h2>Start/Stop Button = GPIO12</h2>
-//! <h2>Battery detection = GPIO19</h2>
-//! <h2>Wake     LED GPIO0</h2>
-//! <h2>Start Hr LED GPIO1</h2>
-//! <h2>Start    LED GPIO2</h2>
-//! <h2>Stop     LED GPIO3</h2>
-//! <h2>EPWM3A - GPIO4</h2>
-//! <h2>EPWM3B - GPIO5</h2>
-//! <h2>EPWM4A - GPIO6</h2>
-//! <h2>EPWM4B - GPIO7</h2>
+//! <h2>Battery detection = GPIO19 pin J2 2</h2>
+//! <h2>Wake        LED GPIO0</h2>
+//! <h2>Start Hr    LED GPIO1</h2>
+//! <h2>Start       LED GPIO2</h2>
+//! <h2>Stop        LED GPIO3</h2>
+//! <h2>EPWM3A High1A - GPIO4 pin J6 5</h2>
+//! <h2>EPWM3B Low1A  - GPIO5 pin J6 6</h2>
+//! <h2>EPWM4A High2A - GPIO6 pin J2 8</h2>
+//! <h2>EPWM4B Low2B  - GPIO7 pin J2 9</h2>
 //!
 //#############################################################################
 // $TI Release: LaunchPad f2802x Support Library v100 $
@@ -128,7 +128,7 @@ void configPWM() {
 	GPIO_setMode(myGpio, GPIO_Number_6, GPIO_6_Mode_EPWM4A);
 	GPIO_setMode(myGpio, GPIO_Number_7, GPIO_7_Mode_EPWM4B);
 
-	GPIO_setLow(myGpio, GPIO_Number_0);
+	//GPIO_setLow(myGpio, GPIO_Number_0);
 }
 
 // Button
@@ -155,7 +155,7 @@ void configGPIO12(CPU_Handle cpu) {
 void configGPIO19(CPU_Handle cpu) {
     GPIO_setMode(myGpio, GPIO_Number_19, GPIO_19_Mode_GeneralPurpose);
     GPIO_setDirection(myGpio, GPIO_Number_19, GPIO_Direction_Input);
-    GPIO_setPullUp(myGpio,GPIO_Number_19,GPIO_PullUp_Enable);
+    GPIO_setPullUp(myGpio,GPIO_Number_19,GPIO_PullUp_Disable);
     GPIO_setQualification(myGpio, GPIO_Number_19, GPIO_Qual_Sample_6);
     GPIO_setQualificationPeriod(myGpio, GPIO_Number_19, 0xFF);
     GPIO_setExtInt(myGpio, GPIO_Number_19, CPU_ExtIntNumber_2);
@@ -287,7 +287,7 @@ void changeFrequency() {
 }
 
 void startStop(PLL_Handle pll, PWR_Handle pwr) {
-	state = STOPPED;
+	state = START;
     while (true) {
     	    if (state == STOPPED) {
     	        if ( PLL_getClkStatus(pll) != PLL_PLLSTS_MCLKSTS_BITS)
@@ -295,9 +295,9 @@ void startStop(PLL_Handle pll, PWR_Handle pwr) {
     	            // LPM mode = Standby
     	            PWR_setLowPowerMode(pwr, PWR_LowPowerMode_Idle);
     	        }
-    			GPIO_setHigh(myGpio, GPIO_Number_0);
+    			//GPIO_setHigh(myGpio, GPIO_Number_0);
     	    		IDLE;
-    			GPIO_setLow(myGpio, GPIO_Number_0);
+    			//GPIO_setLow(myGpio, GPIO_Number_0);
     	    }
         if (memPeriod != period) {
       	  scalePeriods();
@@ -314,20 +314,20 @@ void startStop(PLL_Handle pll, PWR_Handle pwr) {
 			changeFrequency();
 			PWM_setCmpA(myPwm3,widthMin);
 			PWM_setCmpA(myPwm4,widthMin);
-			GPIO_setLow(myGpio, GPIO_Number_1);
+			//GPIO_setLow(myGpio, GPIO_Number_1);
 			incrPulseHr();
-			GPIO_setLow(myGpio, GPIO_Number_2);
+			//GPIO_setLow(myGpio, GPIO_Number_2);
 			incrPulse();
-			GPIO_setHigh(myGpio, GPIO_Number_1);
-			GPIO_setHigh(myGpio, GPIO_Number_2);
+			//GPIO_setHigh(myGpio, GPIO_Number_1);
+			//GPIO_setHigh(myGpio, GPIO_Number_2);
 		}
 		if (state == STOP) {
-			GPIO_setLow(myGpio, GPIO_Number_3);
+			//GPIO_setLow(myGpio, GPIO_Number_3);
 			decrPulse();
 			decrPulseHr();
 			state = STOPPED;
 			changeFrequency();
-			GPIO_setHigh(myGpio, GPIO_Number_3);
+			//GPIO_setHigh(myGpio, GPIO_Number_3);
 		}
     }
 }
@@ -366,7 +366,7 @@ void HRPWM_Config(PWM_Handle pwm, PWM_Number_e nb, PWM_SyncMode_e sync, Uint16 p
     PWM_setCmpA(pwm, widthMin);
     PWM_setCmpB(pwm, widthB);
     PWM_setPhase(pwm, phase);
-    PWM_setCount(pwm, 0x0000);
+    PWM_setCount(pwm, 0x0001);
     
     PWM_setCounterMode(pwm, PWM_CounterMode_UpDown);
     if (sync == PWM_SyncMode_CounterEqualZero ) {
