@@ -128,7 +128,7 @@ void configPWM() {
 	GPIO_setMode(myGpio, GPIO_Number_6, GPIO_6_Mode_EPWM4A);
 	GPIO_setMode(myGpio, GPIO_Number_7, GPIO_7_Mode_EPWM4B);
 
-	//GPIO_setLow(myGpio, GPIO_Number_0);
+	GPIO_setLow(myGpio, GPIO_Number_0);
 }
 
 // Button
@@ -295,9 +295,9 @@ void startStop(PLL_Handle pll, PWR_Handle pwr) {
     	            // LPM mode = Standby
     	            PWR_setLowPowerMode(pwr, PWR_LowPowerMode_Idle);
     	        }
-    			//GPIO_setHigh(myGpio, GPIO_Number_0);
+    			GPIO_setHigh(myGpio, GPIO_Number_0);
     	    		IDLE;
-    			//GPIO_setLow(myGpio, GPIO_Number_0);
+    			GPIO_setLow(myGpio, GPIO_Number_0);
     	    }
         if (memPeriod != period) {
       	  scalePeriods();
@@ -314,20 +314,20 @@ void startStop(PLL_Handle pll, PWR_Handle pwr) {
 			changeFrequency();
 			PWM_setCmpA(myPwm3,widthMin);
 			PWM_setCmpA(myPwm4,widthMin);
-			//GPIO_setLow(myGpio, GPIO_Number_1);
+			GPIO_setLow(myGpio, GPIO_Number_1);
 			incrPulseHr();
-			//GPIO_setLow(myGpio, GPIO_Number_2);
+			GPIO_setLow(myGpio, GPIO_Number_2);
 			incrPulse();
-			//GPIO_setHigh(myGpio, GPIO_Number_1);
-			//GPIO_setHigh(myGpio, GPIO_Number_2);
+			GPIO_setHigh(myGpio, GPIO_Number_1);
+			GPIO_setHigh(myGpio, GPIO_Number_2);
 		}
 		if (state == STOP) {
-			//GPIO_setLow(myGpio, GPIO_Number_3);
+			GPIO_setLow(myGpio, GPIO_Number_3);
 			decrPulse();
 			decrPulseHr();
 			state = STOPPED;
 			changeFrequency();
-			//GPIO_setHigh(myGpio, GPIO_Number_3);
+			GPIO_setHigh(myGpio, GPIO_Number_3);
 		}
     }
 }
